@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 
 
 class SignInFrame extends JInternalFrame {
+    //initiate sign in assets
     JButton SignInButton = new JButton("Sign in");
     JTextField NameTextField = new JTextField("Surname");
     JTextField ForenameTextField = new JTextField("Forename");
@@ -16,7 +17,7 @@ class SignInFrame extends JInternalFrame {
     JPanel field;
     JPanel fieldButtons;
 
-
+    //initiate data assets
     String password;
     String grade;
     String forename;
@@ -24,12 +25,13 @@ class SignInFrame extends JInternalFrame {
 
 
     public SignInFrame(Main main){
+        //initiate sign in pop up window
         SignInFrame signIn = this;
         signIn.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
         setSize(350, 180);
         setLocation(30, 30);
         signIn.rootPane.setLayout(new BoxLayout(rootPane,BoxLayout.PAGE_AXIS));
-
+        //add sign in assets to sign in window
         field = new JPanel(new BorderLayout());
         NameTextField.setSize(signIn.rootPane.getWidth(),14);
         NameTextField.addMouseListener(new MouseAdapter() {
@@ -59,28 +61,23 @@ class SignInFrame extends JInternalFrame {
         this.rootPane.add(field);
         fieldButtons = new JPanel(new BorderLayout());
         fieldButtons.add(SignInButton, BorderLayout.WEST);
-        SignInButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                name = NameTextField.getText();
-                password = PasswordField.getPassword().toString();
-                grade = GradeTextField.getText();
-                if (password.equals("1234")) {
-                    signIn.setVisible(false);
-                } else {
-                    System.out.println("Password incorrect");
-                }
-
+        SignInButton.addActionListener(e -> {
+            name = NameTextField.getText();
+            password = String.valueOf(PasswordField.getPassword());
+            grade = GradeTextField.getText();
+            if ("1234".contentEquals(password)) {
+                signIn.setVisible(false);
+                System.out.println("Password correct");
+            } else {
+                System.out.println("Password incorrect");
             }
+
         });
         fieldButtons.add(CancelButton, BorderLayout.EAST);
-        CancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GradeTextField.setText("Grade");
-                PasswordField.setText("");
-                signIn.setVisible(false);
-            }
+        CancelButton.addActionListener(e -> {
+            GradeTextField.setText("Grade");
+            PasswordField.setText("");
+            signIn.setVisible(false);
         });
         this.rootPane.add(fieldButtons);
     }

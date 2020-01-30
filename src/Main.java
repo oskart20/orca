@@ -7,9 +7,13 @@ import static java.awt.Font.*;
 
 public class Main {
 
+    // declare layout assets
+    GridBagConstraints c;
+    CardLayout cl;
+
     //declare welcome panel assets
     JPanel welcome;
-    JButton teachers;
+    JButton Teacher;
     JButton pupil;
 
     //declare test panel assets
@@ -35,7 +39,10 @@ public class Main {
             {"exhibition", ""}
     };
 
-    //declare sign in(pupils) assets
+    // fonts
+    Font f;
+
+    //declare sign in(pupil) assets
     JPanel signInPanelPupil;
     JButton signInButtonPupil;
     JTextField nameTextFieldPupil;
@@ -43,55 +50,56 @@ public class Main {
     JTextField gradeTextFieldPupil;
     JPasswordField passwordFieldPupil;
     JButton cancelButtonPupil;
-    JPanel fieldPupil;
-    JPanel fieldButtonsPupil;
 
-    //declare teachers data assets
+    //declare pupil data assets
     String passwordPupil;
     String gradePupil;
     String forenamePupil;
     String namePupil;
 
-    //declare sign in(teachers) assets
-    JPanel signInPanelTeachers;
-    JButton signInButtonTeachers;
-    JTextField nameTextFieldTeachers;
-    JTextField forenameTextFieldTeachers;
-    JPasswordField passwordFieldTeachers;
-    JButton cancelButtonTeachers;
-    JPanel fieldTeachers;
-    JPanel fieldButtonsTeachers;
+    //declare sign in(teacher) assets
+    JPanel signInPanelTeacher;
+    JButton signInButtonTeacher;
+    JTextField nameTextFieldTeacher;
+    JTextField forenameTextFieldTeacher;
+    JPasswordField passwordFieldTeacher;
+    JButton cancelButtonTeacher;
 
     //declare teacher data assets
-    String passwordTeachers;
-    String forenameTeachers;
-    String nameTeachers;
+    String passwordTeacher;
+    String forenameTeacher;
+    String nameTeacher;
 
     public void addComponentsToPane(Container pane){
         pane.setLayout(new CardLayout());
         pane.add(welcomeScreen(pane), "WELCOME");
         pane.add(signInPanelPupil(pane), "SIGNINPUPIL");
-        pane.add(signInPanelTeachers(pane), "SIGNINTEACHERS");
+        pane.add(signInPanelTeacher(pane), "SIGNINTEACHER");
         pane.add(testPanel(pane), "TEST");
     }
 
     public JPanel welcomeScreen(Container pane){
         welcome = new JPanel();
-        welcome.setLayout(new BorderLayout());
-        teachers = new JButton("Teachers");
-        teachers.addActionListener(e -> {
-            CardLayout cl = (CardLayout) pane.getLayout();
-            cl.show(pane, "SIGNINTEACHERS");
+        welcome.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        Teacher = new JButton("Teacher");
+        Teacher.addActionListener(e -> {
+            cl = (CardLayout) pane.getLayout();
+            cl.show(pane, "SIGNINTEACHER");
         });
-        teachers.setPreferredSize(new Dimension(200, 100));
-        welcome.add(teachers, BorderLayout.LINE_START);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        welcome.add(Teacher, c);
         pupil = new JButton("Pupil");
         pupil.addActionListener(e -> {
-            CardLayout cl = (CardLayout) pane.getLayout();
+            cl = (CardLayout) pane.getLayout();
             cl.show(pane, "SIGNINPUPIL");
         });
-        pupil.setPreferredSize(new Dimension(200, 100));
-        welcome.add(pupil, BorderLayout.LINE_END);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 1;
+        welcome.add(pupil, c);
         return welcome;
     }
 
@@ -138,42 +146,73 @@ public class Main {
 
     public JPanel signInPanelPupil(Container pane){
         signInPanelPupil = new JPanel();
-        signInPanelPupil.setLayout(new BoxLayout(signInPanelPupil, BoxLayout.PAGE_AXIS));
+        signInPanelPupil.setLayout(new GridBagLayout());
         //add sign in assets to sign in window
-        fieldPupil = new JPanel(new BorderLayout());
-        nameTextFieldPupil = new JTextField("Surname");
-        nameTextFieldPupil.setSize(signInPanelPupil.getWidth(),14);
-        nameTextFieldPupil.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                nameTextFieldPupil.setText("");
-            }
-        });
+        f = new Font("Courier", Font.PLAIN, 30);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
         forenameTextFieldPupil = new JTextField("Forename");
-        forenameTextFieldPupil.setSize(signInPanelPupil.getWidth(),14);
         forenameTextFieldPupil.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                forenameTextFieldPupil.setText("");
+            public void mousePressed(MouseEvent e) {
+                if(forenameTextFieldPupil.getText().equals("Forename")){
+                    forenameTextFieldPupil.setText("");
+                }
             }
         });
-        fieldPupil.add(nameTextFieldPupil, BorderLayout.CENTER);
+        forenameTextFieldPupil.setFont(f);
+        signInPanelPupil.add(forenameTextFieldPupil, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
+        nameTextFieldPupil = new JTextField("Surname");
+        nameTextFieldPupil.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(nameTextFieldPupil.getText().equals("Surname")){
+                    nameTextFieldPupil.setText("");
+                }
+            }
+        });
+        nameTextFieldPupil.setFont(f);
+        signInPanelPupil.add(nameTextFieldPupil, c);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
         gradeTextFieldPupil = new JTextField("Grade");
-        gradeTextFieldPupil.setSize(signInPanelPupil.getWidth(),14);
         gradeTextFieldPupil.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                gradeTextFieldPupil.setText("");
+            public void mousePressed(MouseEvent e) {
+                if(gradeTextFieldPupil.getText().equals("Grade")){
+                    gradeTextFieldPupil.setText("");
+                }
             }
         });
-        fieldPupil.add(gradeTextFieldPupil, BorderLayout.NORTH);
+        gradeTextFieldPupil.setFont(f);
+        signInPanelPupil.add(gradeTextFieldPupil, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
         passwordFieldPupil = new JPasswordField("");
-        passwordFieldPupil.setSize(signInPanelPupil.getWidth(),14);
-        fieldPupil.add(passwordFieldPupil, BorderLayout.SOUTH);
-        signInPanelPupil.add(fieldPupil);
-        fieldButtonsPupil = new JPanel(new BorderLayout());
+        gradeTextFieldPupil.setFont(f);
+        signInPanelPupil.add(passwordFieldPupil, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        c.weightx = 0.25;
+        c.weighty = 0.3;
+        c.ipady = 20;
         signInButtonPupil = new JButton("Sign in");
-        fieldButtonsPupil.add(signInButtonPupil, BorderLayout.WEST);
         signInButtonPupil.addActionListener(e -> {
             forenamePupil = forenameTextFieldPupil.getText();
             namePupil = nameTextFieldPupil.getText();
@@ -181,7 +220,7 @@ public class Main {
             gradePupil = gradeTextFieldPupil.getText();
             if ("1234".contentEquals(passwordPupil)) {
                 // todo: sign in as pupil with the details given
-                CardLayout cl = (CardLayout) pane.getLayout();
+                cl = (CardLayout) pane.getLayout();
                 cl.show(pane, "TEST");
                 System.out.println("Password correct");
             } else {
@@ -189,54 +228,88 @@ public class Main {
             }
 
         });
+        signInPanelPupil.add(signInButtonPupil, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        c.weightx = 0.25;
+        c.weighty = 0.3;
+        c.ipady = 20;
         cancelButtonPupil = new JButton("Cancel");
         cancelButtonPupil.addActionListener(e -> {
+            forenameTextFieldPupil.setText("Forename");
+            nameTextFieldPupil.setText("Surname");
             gradeTextFieldPupil.setText("Grade");
             passwordFieldPupil.setText("");
-            CardLayout cl = (CardLayout) pane.getLayout();
+            cl = (CardLayout) pane.getLayout();
             cl.show(pane, "WELCOME");
         });
-        fieldButtonsPupil.add(cancelButtonPupil, BorderLayout.EAST);
-        signInPanelPupil.add(fieldButtonsPupil);
+        signInPanelPupil.add(cancelButtonPupil, c);
         return signInPanelPupil;
     }
 
-    public JPanel signInPanelTeachers(Container pane){
-        signInPanelTeachers = new JPanel();
-        signInPanelTeachers.setLayout(new BoxLayout(signInPanelTeachers, BoxLayout.PAGE_AXIS));
+    public JPanel signInPanelTeacher(Container pane){
+        signInPanelTeacher = new JPanel();
+        signInPanelTeacher.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        f = new Font("Courier", Font.PLAIN, 30);
         //add sign in assets to sign in window
-        fieldTeachers = new JPanel(new BorderLayout());
-        nameTextFieldTeachers = new JTextField("Surname");
-        nameTextFieldTeachers.setSize(signInPanelTeachers.getWidth(),14);
-        nameTextFieldTeachers.addMouseListener(new MouseAdapter() {
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
+        forenameTextFieldTeacher = new JTextField("Forename");
+        forenameTextFieldTeacher.setSize(signInPanelTeacher.getWidth(),14);
+        forenameTextFieldTeacher.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                nameTextFieldTeachers.setText("");
+            public void mousePressed(MouseEvent e) {
+                if(forenameTextFieldTeacher.getText().equals("Forename")){
+                    forenameTextFieldTeacher.setText("");
+                }
             }
         });
-        forenameTextFieldTeachers = new JTextField("Forename");
-        forenameTextFieldTeachers.setSize(signInPanelTeachers.getWidth(),14);
-        forenameTextFieldTeachers.addMouseListener(new MouseAdapter() {
+        forenameTextFieldTeacher.setFont(f);
+        signInPanelTeacher.add(forenameTextFieldTeacher, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
+        nameTextFieldTeacher = new JTextField("Surname");
+        nameTextFieldTeacher.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                forenameTextFieldTeachers.setText("");
+            public void mousePressed(MouseEvent e) {
+                if(nameTextFieldTeacher.getText().equals("Surname")){
+                    nameTextFieldTeacher.setText("");
+                }
             }
         });
-        fieldTeachers.add(nameTextFieldTeachers, BorderLayout.CENTER);
-        passwordFieldTeachers = new JPasswordField("");
-        passwordFieldTeachers.setSize(signInPanelTeachers.getWidth(),14);
-        fieldTeachers.add(passwordFieldTeachers, BorderLayout.SOUTH);
-        signInPanelTeachers.add(fieldTeachers);
-        fieldButtonsTeachers = new JPanel(new BorderLayout());
-        signInButtonTeachers = new JButton("Sign in");
-        fieldButtonsTeachers.add(signInButtonTeachers, BorderLayout.WEST);
-        signInButtonTeachers.addActionListener(e -> {
-            forenameTeachers = forenameTextFieldTeachers.getText();
-            nameTeachers = nameTextFieldTeachers.getText();
-            passwordTeachers = String.valueOf(passwordFieldTeachers.getPassword());
-            if ("1234".contentEquals(passwordTeachers)) {
+        nameTextFieldTeacher.setFont(f);
+        signInPanelTeacher.add(nameTextFieldTeacher, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weightx = 0.5;
+        c.weighty = 0.25;
+        c.ipady = 40;
+        passwordFieldTeacher = new JPasswordField("");
+        passwordFieldTeacher.setFont(f);
+        signInPanelTeacher.add(passwordFieldTeacher, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        c.weightx = 0.25;
+        c.weighty = 0.3;
+        c.ipady = 20;
+        signInButtonTeacher = new JButton("Sign in");
+        signInButtonTeacher.addActionListener(e -> {
+            forenameTeacher = forenameTextFieldTeacher.getText();
+            nameTeacher = nameTextFieldTeacher.getText();
+            passwordTeacher = String.valueOf(passwordFieldTeacher.getPassword());
+            if ("1234".contentEquals(passwordTeacher)) {
                 // todo: sign in as teacher with the details given
-                CardLayout cl = (CardLayout) pane.getLayout();
+                cl = (CardLayout) pane.getLayout();
                 cl.show(pane, "TEST");
                 System.out.println("Password correct");
             } else {
@@ -244,15 +317,22 @@ public class Main {
             }
 
         });
-        cancelButtonTeachers = new JButton("Cancel");
-        cancelButtonTeachers.addActionListener(e -> {
-            passwordFieldTeachers.setText("");
-            CardLayout cl = (CardLayout) pane.getLayout();
+        signInPanelTeacher.add(signInButtonTeacher, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        c.weightx = 0.25;
+        c.weighty = 0.3;
+        c.ipady = 20;
+        cancelButtonTeacher = new JButton("Cancel");
+        cancelButtonTeacher.addActionListener(e -> {
+            forenameTextFieldTeacher.setText("Forename");
+            nameTextFieldTeacher.setText("Surname");
+            passwordFieldTeacher.setText("");
+            cl = (CardLayout) pane.getLayout();
             cl.show(pane, "WELCOME");
         });
-        fieldButtonsTeachers.add(cancelButtonTeachers, BorderLayout.EAST);
-        signInPanelTeachers.add(fieldButtonsTeachers);
-        return signInPanelTeachers;
+        signInPanelTeacher.add(cancelButtonTeacher, c);
+        return signInPanelTeacher;
     }
 
     private void createAndShowGUI() {

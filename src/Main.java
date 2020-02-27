@@ -1,11 +1,21 @@
+
+
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
 
 import static java.awt.Font.*;
 
 public class Main {
+
+    CSVReader reader = new CSVReader();
 
     // declare layout assets
     GridBagConstraints c;
@@ -13,7 +23,7 @@ public class Main {
 
     //declare welcome panel assets
     JPanel welcome;
-    JButton Teacher;
+    JButton teacher;
     JButton pupil;
 
     //declare test panel assets
@@ -70,27 +80,41 @@ public class Main {
     String forenameTeacher;
     String nameTeacher;
 
+    //declare teacherOverview assets
+    JPanel teacherOverview;
+    JSpinner spinner;
+    JTable viewTable;
+    JScrollPane viewScrollPane;
+    JTextField importTextField;
+    JButton importButton;
+    String[][] voidData = new String[][]{{"", ""}};
+    String[][] newData;
+
+    JPanel correctedTest;
+
+
     public void addComponentsToPane(Container pane){
         pane.setLayout(new CardLayout());
         pane.add(welcomeScreen(pane), "WELCOME");
         pane.add(signInPanelPupil(pane), "SIGNINPUPIL");
         pane.add(signInPanelTeacher(pane), "SIGNINTEACHER");
         pane.add(testPanel(pane), "TEST");
+        pane.add(teacherOverview(pane), "TEACHEROVERVIEW");
     }
 
     public JPanel welcomeScreen(Container pane){
         welcome = new JPanel();
         welcome.setLayout(new GridBagLayout());
         c = new GridBagConstraints();
-        Teacher = new JButton("Teacher");
-        Teacher.addActionListener(e -> {
+        teacher = new JButton("Teacher");
+        teacher.addActionListener(e -> {
             cl = (CardLayout) pane.getLayout();
             cl.show(pane, "SIGNINTEACHER");
         });
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 1;
-        welcome.add(Teacher, c);
+        welcome.add(teacher, c);
         pupil = new JButton("Pupil");
         pupil.addActionListener(e -> {
             cl = (CardLayout) pane.getLayout();
@@ -310,7 +334,7 @@ public class Main {
             if ("1234".contentEquals(passwordTeacher)) {
                 // todo: sign in as teacher with the details given
                 cl = (CardLayout) pane.getLayout();
-                cl.show(pane, "TEST");
+                cl.show(pane, "TEACHEROVERVIEW");
                 System.out.println("Password correct");
             } else {
                 System.out.println("Password incorrect");
@@ -335,6 +359,73 @@ public class Main {
         return signInPanelTeacher;
     }
 
+    public JPanel teacherOverview(Container pane){
+        teacherOverview = new JPanel();
+        teacherOverview.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        f = new Font("Courier", Font.PLAIN, 15);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0.5;
+        c.weighty = 1;
+        c.ipady = 40;
+        importTextField = new JTextField("Import .csv file");
+        importTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(importTextField.getText().equals("Import .csv file")){
+                    importTextField.setText("");
+                }
+            }
+        });
+        importTextField.setFont(f);
+        teacherOverview.add(importTextField, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 0.5;
+        c.weighty = 1;
+        c.ipady = 40;
+        importButton = new JButton("Import");
+        importButton.addActionListener(e -> {
+            DefaultTableModel tableModel = (DefaultTableModel) viewTable.getModel();
+            newData = reader.readCSV(importTextField.getText());
+            tableModel.setDataVector(newData, columnNames);
+            spinner.setValue(newData.length);
+        });
+        teacherOverview.add(importButton, c);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weightx = 0.5;
+        c.weighty = 1;
+        c.ipady = 40;
+        spinner = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+        spinner.addChangeListener(e -> {
+            DefaultTableModel tableModel = (DefaultTableModel) viewTable.getModel();
+            tableModel.setRowCount((Integer) spinner.getValue());
+        });
+        teacherOverview.add(spinner, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 3;
+        c.weightx = 5;
+        c.fill = GridBagConstraints.BOTH;
+        viewTable = new JTable(new DefaultTableModel(voidData, columnNames));
+        viewTable.setFont(new Font(DIALOG , PLAIN, 13));
+        viewScrollPane = new JScrollPane(viewTable);
+        viewTable.setFillsViewportHeight(true);
+        viewTable.setGridColor(Color.BLUE);
+        teacherOverview.add(viewScrollPane, c);
+        return teacherOverview;
+    }
+
+    public JPanel correctedTest(Container pane){
+        correctedTest = new JPanel();
+        correctedTest.setLayout(new GridBagLayout());
+
+        return correctedTest;
+    }
+
     private void createAndShowGUI() {
         //create and set up the window.
         JFrame frame;
@@ -352,7 +443,7 @@ public class Main {
         frame.setSize(800 + insets.left + insets.right, 550 + insets.top + insets.bottom);
         frame.setVisible(true);
     }
-
+    
     public static void main(String[] args){
         Main orca = new Main();
         orca.createAndShowGUI();

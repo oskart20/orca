@@ -1,14 +1,10 @@
-
-
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.net.ContentHandler;
+import java.time.LocalDate;
+import java.util.UUID;
 
 
 import static java.awt.Font.*;
@@ -16,6 +12,7 @@ import static java.awt.Font.*;
 public class Main {
 
     CSVReader reader = new CSVReader();
+    ContentProvider provider = new ContentProvider();
 
     // declare layout assets
     GridBagConstraints c;
@@ -75,6 +72,8 @@ public class Main {
     JPasswordField passwordFieldTeacher;
     JButton cancelButtonTeacher;
 
+    String teacherID;
+
     //declare teacher data assets
     String passwordTeacher;
     String forenameTeacher;
@@ -86,9 +85,12 @@ public class Main {
     JTable viewTable;
     JScrollPane viewScrollPane;
     JTextField importTextField;
+    JTextField gradeTextFieldTeacher;
     JButton importButton;
+    JButton submitButton;
     String[][] voidData = new String[][]{{"", ""}};
     String[][] newData;
+    String intendedGrade;
 
     JPanel correctedTest;
 
@@ -242,8 +244,14 @@ public class Main {
             namePupil = nameTextFieldPupil.getText();
             passwordPupil = String.valueOf(passwordFieldPupil.getPassword());
             gradePupil = gradeTextFieldPupil.getText();
+            /*if (provider.singInUser(passwordPupil, namePupil, forenamePupil, "Pupil")) {
+                cl = (CardLayout) pane.getLayout();
+                cl.show(pane, "TEACHEROVERVIEW");
+                System.out.println("Password correct, used content provider");
+            } else {
+                System.out.println("Password incorrect");
+            }*/
             if ("1234".contentEquals(passwordPupil)) {
-                // todo: sign in as pupil with the details given
                 cl = (CardLayout) pane.getLayout();
                 cl.show(pane, "TEST");
                 System.out.println("Password correct");
@@ -331,8 +339,14 @@ public class Main {
             forenameTeacher = forenameTextFieldTeacher.getText();
             nameTeacher = nameTextFieldTeacher.getText();
             passwordTeacher = String.valueOf(passwordFieldTeacher.getPassword());
+            /*if (provider.singInUser(passwordTeacher, nameTeacher, forenameTeacher, "Teacher")) {
+                cl = (CardLayout) pane.getLayout();
+                cl.show(pane, "TEACHEROVERVIEW");
+                System.out.println("Password correct, used content provider");
+            } else {
+                System.out.println("Password incorrect");
+            }*/
             if ("1234".contentEquals(passwordTeacher)) {
-                // todo: sign in as teacher with the details given
                 cl = (CardLayout) pane.getLayout();
                 cl.show(pane, "TEACHEROVERVIEW");
                 System.out.println("Password correct");
@@ -396,6 +410,38 @@ public class Main {
         teacherOverview.add(importButton, c);
         c.gridx = 0;
         c.gridy = 2;
+        c.weightx = 0.5;
+        c.weighty = 1;
+        c.ipady = 40;
+        gradeTextFieldTeacher = new JTextField("Grade");
+        gradeTextFieldTeacher.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(gradeTextFieldTeacher.getText().equals("Grade")){
+                    gradeTextFieldTeacher.setText("");
+
+                }
+            }
+        });
+        gradeTextFieldTeacher.setFont(f);
+        teacherOverview.add(gradeTextFieldTeacher, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.weightx = 0.5;
+        c.weighty = 1;
+        c.ipady = 40;
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> {
+            // insert current table data into database under unique id
+            // id is made up out of teacher surname + grade the test is intended for
+            LocalDate date = LocalDate.now();
+            intendedGrade = gradeTextFieldTeacher.getText();
+            String testID = (nameTeacher + "_" + intendedGrade).toLowerCase() + date; //TODO: ADD DATE
+            System.out.println(testID);
+        });
+        teacherOverview.add(submitButton, c);
+        c.gridx = 0;
+        c.gridy = 3;
         c.weightx = 0.5;
         c.weighty = 1;
         c.ipady = 40;

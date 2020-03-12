@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.ContentHandler;
+import java.nio.file.NoSuchFileException;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -402,10 +403,14 @@ public class Main {
         c.ipady = 40;
         importButton = new JButton("Import");
         importButton.addActionListener(e -> {
+            // todo: import via ID as well
+
+
             DefaultTableModel tableModel = (DefaultTableModel) viewTable.getModel();
             newData = reader.readCSV(importTextField.getText());
             tableModel.setDataVector(newData, columnNames);
             spinner.setValue(newData.length);
+
         });
         teacherOverview.add(importButton, c);
         c.gridx = 0;
@@ -436,12 +441,12 @@ public class Main {
             // id is made up out of teacher surname + grade the test is intended for
             LocalDate date = LocalDate.now();
             intendedGrade = gradeTextFieldTeacher.getText();
-            String testID = (nameTeacher + "_" + intendedGrade).toLowerCase() + date; //TODO: ADD DATE
+            String testID = (nameTeacher + "_" + intendedGrade).toLowerCase()+"_"+ date; //TODO: ADD DATE
             System.out.println(testID);
         });
         teacherOverview.add(submitButton, c);
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         c.weightx = 0.5;
         c.weighty = 1;
         c.ipady = 40;
@@ -455,6 +460,7 @@ public class Main {
         c.gridy = 0;
         c.gridheight = 3;
         c.weightx = 5;
+        c.gridheight = 5;
         c.fill = GridBagConstraints.BOTH;
         viewTable = new JTable(new DefaultTableModel(voidData, columnNames));
         viewTable.setFont(new Font(DIALOG , PLAIN, 13));
